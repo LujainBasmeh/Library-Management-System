@@ -1,5 +1,6 @@
 package com.example.library_management_system.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -17,6 +18,7 @@ public class Patron{
 	private String name;
 
     @NotBlank(message = "The Email value is required.")
+    @Email
 	@Column(name = "EMAIL",unique = true)
     private String email;
 
