@@ -1,6 +1,7 @@
 package com.example.library_management_system.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "PATRON",uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}, name = "email_unique_constraint")})
@@ -20,6 +21,7 @@ public class Patron{
     private String email;
 
 	@Column(name = "PHONE")
+	@Pattern(regexp="(^$|[0-9]{12})",message = "The Phone number should be 12 numbers. (country code + number)")
     private String phone;
 	
 	@Column(name = "ADDRESS")
