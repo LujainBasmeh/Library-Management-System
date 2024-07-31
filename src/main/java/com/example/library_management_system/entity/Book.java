@@ -3,6 +3,7 @@ import java.time.Year;
 import org.hibernate.annotations.ColumnDefault;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "BOOK",uniqueConstraints = {@UniqueConstraint(columnNames = {"ISBN"}, name = "isbn_unique_constraint")})
@@ -21,9 +22,9 @@ public class Book{
 	@Column(name = "AUTHOR")
     private String author;
 
-    @NotBlank(message = "The Year value is required.")
+    @NotNull(message = "The Year value is required.")
 	@Column(name = "PUBLICATION_YEAR")
-    private String publicationYear;
+    private Year publicationYear;
 
 
 	@NotBlank(message = "The ISBN value is required.")
@@ -58,11 +59,11 @@ public class Book{
 		this.author = author;
 	}
 
-	public String getPublicationYear() {
+	public Year getPublicationYear() {
 		return publicationYear;
 	}
 
-	public void setPublicationYear(String publicationYear) {
+	public void setPublicationYear(Year publicationYear) {
 		this.publicationYear = publicationYear;
 	}
 
@@ -82,7 +83,7 @@ public class Book{
 		this.borrowed = borrowed;
 	}
 	public Book() {}
-	public Book(Long id, String title,String author,String publicationYear,String isbn) {
+	public Book(Long id, String title,String author,Year publicationYear,String isbn) {
 		super();
 		this.id = id;
 		this.title = title;
