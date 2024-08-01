@@ -3,6 +3,9 @@ package com.example.library_management_system.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.example.library_management_system.entity.Book;
@@ -20,7 +23,7 @@ public class BookService{
         return bookRepository.save(book);
     }
 
-
+    @Cacheable(cacheNames = "books", key = "#id")
     public Book findById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id: " + id + " not found"));
@@ -29,7 +32,8 @@ public class BookService{
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
-
+    
+    @CacheEvict(cacheNames = "books", key = "#id")
     public void deleteById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id: " + id + " not found"));
@@ -37,6 +41,7 @@ public class BookService{
         bookRepository.deleteById(book.getId());
     }
 
+    @CachePut(cacheNames = "books", key = "#id")
     public Book updateById(Long id, Book updatedBook) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book with id: " + id + " not found"));

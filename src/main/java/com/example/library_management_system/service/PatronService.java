@@ -3,6 +3,9 @@ package com.example.library_management_system.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.example.library_management_system.entity.Patron;
@@ -22,6 +25,7 @@ public class PatronService {
 		return patronRepository.save(patron);
 	}
 
+    @Cacheable(cacheNames = "patrons", key = "#id")
 	public Patron findById(Long id) {
 		return patronRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Patron with id: " + id + " not found"));
@@ -30,7 +34,8 @@ public class PatronService {
 	public List<Patron> findAll() {
 		return patronRepository.findAll();
 	}
-
+	
+    @CacheEvict(cacheNames = "patrons", key = "#id")
 	public void deleteById(Long id) {
 	
 		Patron patron = patronRepository.findById(id)
@@ -38,6 +43,7 @@ public class PatronService {
 		patronRepository.deleteById(patron.getId());
 	}
 
+    @CachePut(cacheNames = "patrons", key = "#id")
 	public Patron updateById(Long id, Patron updatedPatron) {
 	
 		Patron patron = patronRepository.findById(id)
