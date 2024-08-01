@@ -1,6 +1,14 @@
 ### **Library Management System**
 This project aims to create a library management system using Spring Boot. It contains services to manage books, patrons, in addition to the book borrowing service.
 
+### **Features Added**
+1. Manage books, patrons, and borrowing records
+2. RESTful API endpoints
+3. Validation and error handling
+4. Testing
+5. AOP performance logging
+6. Caching
+
 ### **Getting Started**
 ### **Prerequisites**
   - Java 17
