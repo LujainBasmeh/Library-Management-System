@@ -1,4 +1,4 @@
-package com.example.library_management_system.helpers;
+package com.example.library_management_system.extra;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
