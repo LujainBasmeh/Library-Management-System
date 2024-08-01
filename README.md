@@ -8,6 +8,7 @@ This project aims to create a library management system using Spring Boot. It co
 4. Testing
 5. AOP performance logging
 6. Caching
+7. Security with Basic Authentication 
 
 ### **Getting Started**
 ### **Prerequisites**
@@ -30,6 +31,11 @@ This project aims to create a library management system using Spring Boot. It co
   6. The application will start running on http://localhost:8090.
 
 ### **API Endpoints**
+Use basic authentication for all endpoints with this credential
+
+    Username = user
+    Password = password
+
 The following API endpoints are available:
 
   1. **Book Endpoints**
