@@ -17,16 +17,16 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
 import com.example.library_management_system.controller.BookController;
 import com.example.library_management_system.entity.Book;
 import com.example.library_management_system.repository.BookRepository;
 import com.example.library_management_system.service.BookService;
 import com.jayway.jsonpath.JsonPath;
+
 
 @WebMvcTest(BookController.class)
 public class BookControllerTest {
@@ -36,9 +36,12 @@ public class BookControllerTest {
 
 	@Mock
 	private BookRepository bookRepository;
+	
 	@MockBean
 	private BookService bookService;
 
+	private CsrfRequestPostProcessor csrf = SecurityMockMvcRequestPostProcessors.csrf();
+	
 	@Test
 	public void testFindAll_success() throws Exception {
 		// Arrange
@@ -47,7 +50,9 @@ public class BookControllerTest {
 		when(bookService.findAll()).thenReturn(books);
 
 		// Act and Assert
-		mockMvc.perform(get("/api/books")).andExpect(status().isOk())
+		mockMvc.perform(get("/api/books")
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
+               .andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(
 						"[{\"id\":1,\"title\":\"Book 1\",\"author\":\"Author 1\",\"publicationYear\":\"2023\",\"isbn\":\"1234\"},"
@@ -61,8 +66,9 @@ public class BookControllerTest {
 		when(bookService.findById(1L)).thenReturn(book);
 
 		// Act and Assert
-		mockMvc.perform(get("/api/books/1"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/api/books/1")
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
+            	.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json(
 						"{\"id\":1,\"title\":\"Book 1\",\"author\":\"Author 1\",\"publicationYear\":\"2023\",\"isbn\":\"1234\"}"));
 
@@ -88,6 +94,8 @@ public class BookControllerTest {
 		when(bookService.updateById(id, updatedBook)).thenReturn(updatedBook);
 		// Act and Assert
 		 mockMvc.perform(put("/api/books/" + id)
+				 .with(csrf)
+				 .with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(
 				"{\"title\":\"Book 1\",\"author\":\"Author 1\",\"publicationYear\":\"2020\",\"isbn\":\"1111\"}"))
@@ -101,6 +109,8 @@ public class BookControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(put("/api/books/" + id)
+				.with(csrf)
+                .with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(
 				"{\"title\":\"\",\"author\":\"Author 1\",\"publicationYear\":\"2020\",\"isbn\":\"1111\"}"))
@@ -120,7 +130,9 @@ public class BookControllerTest {
 		doNothing().when(bookRepository).deleteById(id);
 		// Act and Assert
 
-		mockMvc.perform(delete("/api/books/" + id))
+		mockMvc.perform(delete("/api/books/" + id)
+				.with(csrf)
+                .with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
 				.andExpect(status().isOk());
 	}
 

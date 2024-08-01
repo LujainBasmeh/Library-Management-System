@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.info.Info;
 
 @Configuration 
 @EnableWebMvc
-public class Swagger {                                    
+public class SwaggerConfig {                                    
 	  @Bean
 	    public OpenAPI apiInfo() {
 	        return new OpenAPI().info(new Info().title("Library Management System").version("1.0.0"));

@@ -1,32 +1,25 @@
 package com.example.library_management_system;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.sql.Date;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
-
 import com.example.library_management_system.controller.BorrowingController;
-import com.example.library_management_system.controller.PatronController;
 import com.example.library_management_system.entity.Book;
 import com.example.library_management_system.entity.Borrowing;
 import com.example.library_management_system.entity.Patron;
 import com.example.library_management_system.repository.BorrowingRepository;
-import com.example.library_management_system.repository.PatronRepository;
 import com.example.library_management_system.service.BookService;
 import com.example.library_management_system.service.BorrowingService;
 import com.example.library_management_system.service.PatronService;
@@ -49,6 +42,8 @@ public class BorrowingControllerTest {
 	@MockBean
 	private PatronService patronService;
 	
+	private CsrfRequestPostProcessor csrf = SecurityMockMvcRequestPostProcessors.csrf();
+
 	@Test
 	public void testBorrowBook_success() throws Exception {
 		// Arrange
@@ -65,6 +60,8 @@ public class BorrowingControllerTest {
 
 		// Act and Assert
 		mockMvc.perform(post("/api/borrows/borrow/"+bookId+"/patron/"+patronId)
+				.with(csrf)
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
                 .contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -101,6 +98,8 @@ public class BorrowingControllerTest {
 
 		// Act and Assert
 		mockMvc.perform(put("/api/borrows/return/"+bookId+"/patron/"+patronId)
+				.with(csrf)
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
 				 .contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 		}

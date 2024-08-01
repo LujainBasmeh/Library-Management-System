@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -33,8 +35,11 @@ public class PatronControllerTest {
 
 	@Mock
 	private PatronRepository patronRepository;
+	
 	@MockBean
 	private PatronService patronService;
+
+	private CsrfRequestPostProcessor csrf = SecurityMockMvcRequestPostProcessors.csrf();
 
 	@Test
 	public void testFindAll_success() throws Exception {
@@ -44,7 +49,8 @@ public class PatronControllerTest {
 		when(patronService.findAll()).thenReturn(patrons);
 
 		// Act and Assert
-		mockMvc.perform(get("/api/patrons"))
+		mockMvc.perform(get("/api/patrons")
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(
@@ -59,7 +65,8 @@ public class PatronControllerTest {
 		when(patronService.findById(1L)).thenReturn(patron);
 
 		// Act and Assert
-		mockMvc.perform(get("/api/patrons/1"))
+		mockMvc.perform(get("/api/patrons/1")
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json(
 						"{\"id\":1,\"name\":\"User 1\",\"email\":\"user1@gmail.com\",\"phone\":\"1234567\",\"address\":\"address1\"}"));
@@ -86,6 +93,8 @@ public class PatronControllerTest {
 		when(patronService.updateById(id, updatedPatron)).thenReturn(updatedPatron);
 		// Act and Assert
 		mockMvc.perform(put("/api/patrons/" + id)
+				.with(csrf)
+				.with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(
 				"{\"name\":\"User 1\",\"email\":\"user1@gmail.com\",\"phone\":\"963930918983\",\"address\":\"new address1\"}"))
@@ -103,6 +112,8 @@ public class PatronControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(put("/api/patrons/" + id)
+				.with(csrf)
+                .with(SecurityMockMvcRequestPostProcessors.user("user").password("password"))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(
 				"{\"name\":\"User 1\",\"email\":\"user1@gmail.com\",\"phone\":\"k1234\",\"address\":\"new address1\"}"))
@@ -122,7 +133,9 @@ public class PatronControllerTest {
 		doNothing().when(patronRepository).deleteById(id);
 		// Act and Assert
 
-		mockMvc.perform(delete("/api/patrons/" + id))
+		mockMvc.perform(delete("/api/patrons/" + id)
+				.with(csrf)
+                .with(SecurityMockMvcRequestPostProcessors.user("user").password("password")))
 				.andExpect(status().isOk());
 	}
 

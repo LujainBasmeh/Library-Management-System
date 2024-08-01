@@ -12,7 +12,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Configuration
 @EnableCaching
-public class Caching {
+public class CachingConfig {
     @Bean
     public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("books","patrons");
