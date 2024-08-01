@@ -22,33 +22,24 @@ public class PatronService {
 		return patronRepository.save(patron);
 	}
 
-	// @Cacheable(cacheNames = CachingConfig.PATRONS_CACHE_NAME, key = "#id")
 	public Patron findById(Long id) {
-		// log.info("findPatronById(id:{})", id);
 		return patronRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Patron with id: " + id + " not found"));
 	}
 
-	// @Cacheable(cacheNames = CachingConfig.PATRONS_CACHE_NAME, key =
-	// "#root.methodName")
 	public List<Patron> findAll() {
-		// log.info("findAllPAtron()");
 		return patronRepository.findAll();
 	}
 
-	// @CacheEvict(cacheNames = CachingConfig.PATRONS_CACHE_NAME, key = "#id")
 	public void deleteById(Long id) {
-		// log.info("deletePatronById(id:{})", id);
-
+	
 		Patron patron = patronRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Patron with id: " + id + " not found"));
 		patronRepository.deleteById(patron.getId());
 	}
 
-	// @CachePut(cacheNames = CachingConfig.PATRONS_CACHE_NAME, key = "#id")
 	public Patron updateById(Long id, Patron updatedPatron) {
-		// log.info("updatePatronById(id:{}, updatedPatron:{})", id, patron);
-
+	
 		Patron patron = patronRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Patron with id: " + id + " not found"));
 

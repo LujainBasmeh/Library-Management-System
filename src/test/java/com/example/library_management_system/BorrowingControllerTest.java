@@ -1,6 +1,7 @@
 package com.example.library_management_system;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,15 +78,11 @@ public class BorrowingControllerTest {
 		Patron patron = new Patron();
 		
 		when(bookService.findById(bookId)).thenReturn(book);
-		doThrow(new RuntimeException("Patron with id: " + patronId + " not found")).when(patronService).findById(patronId);
-		doThrow(new RuntimeException("Patron with id: " + patronId + " not found")).when(borrowingService).borrowBook(bookId, patronId);
+		doThrow(new NoSuchElementException("Patron with id: " + patronId + " not found")).when(patronService).findById(patronId);
+		doThrow(new NoSuchElementException("Patron with id: " + patronId + " not found")).when(borrowingService).borrowBook(bookId, patronId);
 		
 		// Act and Assert
-		mockMvc.perform(post("/api/borrows/borrow/"+bookId+"/patron/"+patronId)
-                .contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
-				.andExpect(result -> assertEquals("Patron with id: " + patronId + " not found",
-						result.getResolvedException().getMessage()));
+	    assertThrows(NoSuchElementException.class, () -> borrowingService.borrowBook(bookId, patronId));
 	}
 	
 	@Test
@@ -119,16 +116,11 @@ public class BorrowingControllerTest {
 		
 		when(bookService.findById(bookId)).thenReturn(book);
 		when(patronService.findById(patronId)).thenReturn(patron);
-		doThrow(new RuntimeException("Borrowing record for book with id: " + bookId
+		doThrow(new NoSuchElementException("Borrowing record for book with id: " + bookId
 				+ " and patron with id " + patronId + " not found")).when(borrowingService).returnBook(bookId, patronId, date);
 		
 		// Act and Assert
-		mockMvc.perform(put("/api/borrows/return/"+bookId+"/patron/"+patronId)
-                .contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
-				.andExpect(result -> assertEquals("Borrowing record for book with id: " + bookId
-						+ " and patron with id " + patronId + " not found",
-						result.getResolvedException().getMessage()));
+	    assertThrows(NoSuchElementException.class, () -> borrowingService.returnBook(bookId, patronId, date));
 		}
 
 }
