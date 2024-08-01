@@ -86,3 +86,9 @@ The following API endpoints are available:
 
 ### **Swagger Documentation**
   The API documentation is available at http://localhost:8090/swagger-ui/index.html#/ when the application is running.
+
+
+### **ERD Diagram**
+  This digram represent the relationships between the entities
+  ![image](https://github.com/user-attachments/assets/ed048c4f-662b-4e4d-a105-b880731fb285)
+
